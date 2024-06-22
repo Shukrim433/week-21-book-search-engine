@@ -18,10 +18,14 @@ const resolvers = {
     },
 
     Mutation: {
-        addUser: async (parent, args) => { // args =  { username, email, password }
-            const user = await User.create(args)
-            const token = signToken(user) // user object = jwt payload
-            return { token, user };
+        addUser: async (parent, { username, email, password }) => { // args =  { username, email, password }
+            try {
+                const user = await User.create({ username, email, password })
+                const token = signToken(user) // user object = jwt payload
+                return { token, user };
+            } catch {
+                console.log('error with signup')
+            }
         },
         login: async (parent, {email, password}) => {  // {email, password} = args
             const user = await User.findOne({ email })
@@ -77,3 +81,5 @@ const resolvers = {
 
     }
 }
+
+module.exports = resolvers;
