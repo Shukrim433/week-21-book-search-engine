@@ -6,18 +6,25 @@ import {
   Row,
   Col
 } from 'react-bootstrap';
-
-import { getMe, deleteBook } from '../utils/API';
-import Auth from '../utils/auth';
+import { useQuery } from '@apollo/client'; //** import useQuery hook from apolloclient
+import { getMe, deleteBook } from '../utils/API'; //** remove getMe  + deleteBookfunction and replace with GET_ME query
+import Auth from '../utils/auth'; //** Authservices class from auth.js to use with GET_ME query
 import { removeBookId } from '../utils/localStorage';
+import { GET_ME } from '../utils/queries'; //** import GET_ME query
+import { REMOVE_BOOK } from '../utils/mutations'; // **import the SAVE_BOOK mutation
+import { useMutation } from '@apollo/client'; // **import the useMutation hook from apolloclient
+
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  // Instead, use the `useQuery()` Hook to execute the `GET_ME` query on load and save it to a variable named `userData`.
+  const { loading, userData } = useQuery( GET_ME);
+
+  //const [userData, setUserData] = useState({});
 
   // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
+  //const userDataLength = Object.keys(userData).length;
 
-  useEffect(() => {
+  /*useEffect(() => {
     const getUserData = async () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -40,7 +47,8 @@ const SavedBooks = () => {
     };
 
     getUserData();
-  }, [userDataLength]);
+  }, [userDataLength]);*/
+
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -51,9 +59,12 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await deleteBook(bookId, token);
+      //** Use the `useMutation()` Hook to execute the `REMOVE_BOOK` mutation in the `handleDeleteBook()` function instead of the `deleteBook()`
+      const [removeBook, { error }] = useMutation(REMOVE_BOOK);
+      //const response = await deleteBook(bookId, token);
+      const { data } = await removeBook(bookId)
 
-      if (!response.ok) {
+      if (!data) { //changed from responde.ok
         throw new Error('something went wrong!');
       }
 
