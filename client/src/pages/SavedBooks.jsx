@@ -11,7 +11,7 @@ import { getMe, deleteBook } from '../utils/API'; //** remove getMe  + deleteBoo
 import Auth from '../utils/auth'; //** Authservices class from auth.js to use with GET_ME query
 import { removeBookId } from '../utils/localStorage';
 import { GET_ME } from '../utils/queries'; //** import GET_ME query
-import { REMOVE_BOOK } from '../utils/mutations'; // **import the SAVE_BOOK mutation
+import { REMOVE_BOOK } from '../utils/mutations'; // **import the REMOVE_BOOK mutation
 import { useMutation } from '@apollo/client'; // **import the useMutation hook from apolloclient
 
 
