@@ -2,10 +2,11 @@
 import decode from 'jwt-decode';
 
 // create a new class to instantiate for a user
+// methods in this class are all going to be used in the components, and data from there will be passed to these functions, where necessary
 class AuthService {
   // get user data
   getProfile() {
-    return decode(this.getToken());
+    return decode(this.getToken());  // Returns the decoded payload which contains the user's profile information.  // When you call decode on a JWT, it parses and decodes the payload part of the token, returning the claims as a JavaScript object. such as user information (e.g., user ID, username, email).
   }
 
   // check if user's logged in
