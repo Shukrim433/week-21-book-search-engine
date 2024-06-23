@@ -9,8 +9,12 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API'; //remove this saveBookfunction use our SAVE_BOOK mutation instead
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+
+import { SAVE_BOOK } from '../utils/mutations'; // **import the SAVE_BOOK mutation
+import { useMutation } from '@apollo/client'; // **import the useMutation hook from apolloclient
+
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -62,6 +66,7 @@ const SearchBooks = () => {
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
+    // **The find method in JavaScript is used to locate a single element in an array that matches a specified condition. It returns the first element that satisfies the provided test
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
     // get token
@@ -71,13 +76,17 @@ const SearchBooks = () => {
       return false;
     }
 
-    try {
-      const response = await saveBook(bookToSave, token);
+    const [saveBooky, { error }] = useMutation(SAVE_BOOK);
 
-      if (!response.ok) {
+    try {
+      const { data } = await saveBooky(bookToSave)
+      //const response = await saveBook(bookToSave, token); remove this replace with line above
+
+      if (!data) { // changed from response.ok
         throw new Error('something went wrong!');
       }
 
+      // this adds the book that we just saved's id to local storage array of savedBookIds
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
@@ -132,12 +141,12 @@ const SearchBooks = () => {
                     <Card.Text>{book.description}</Card.Text>
                     {Auth.loggedIn() && (
                       <Button
-                        disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
+                        disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)} // "disabled" attribute in HTML elements, when set to true, typically prevents user interaction with that element.
                         className='btn-block btn-info'
                         onClick={() => handleSaveBook(book.bookId)}>
-                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
-                          ? 'This book has already been saved!'
-                          : 'Save this Book!'}
+                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId) // when you click save, the text of button changes to 'this book is already saved
+                          ? 'This book has already been saved!' // .some checks if at least one element in an array satisfies a condition. returns true if any element matches the condition, otherwise false. 
+                          : 'Save this Book!'}      
                       </Button>
                     )}
                   </Card.Body>
