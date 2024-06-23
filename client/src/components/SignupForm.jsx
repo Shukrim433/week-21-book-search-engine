@@ -34,7 +34,7 @@ const SignupForm = () => {
     try {
       //const response = await createUser(userFormData);
       const { data } = await addUser({ // on form submit, create user, using formState, ie all the text user entered in form input fields....
-        variables: { ...formState }, // Spread the formState object to use its properties as variables for the mutation
+        variables: { ...userFormData }, // Spread the formState object to use its properties as variables for the mutation
       });
 
       if (!data) { // changed from !response.ok
