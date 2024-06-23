@@ -9,10 +9,17 @@ export const GET_ME = gql`
             email
             password
             bookCount
-            savedBooks
+            savedBooks {
+                _id
+                authors
+                description
+                image
+                link
+                title
+            }
         }
     }
 `
 // THIS is the query that were executing here :  me: User
 // query me{}  = is specifying that the query being executed here is the 'me' query set up in server-typeDefs
-// me {}  = is the User record returned by this query, as specified in the typeDefs
+// me {}  = is the authenticated User record returned by this query, as specified in the typeDefs
