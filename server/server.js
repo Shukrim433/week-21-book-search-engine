@@ -6,6 +6,7 @@ const { authMiddleware } = require('./utils/auth'); // **import only the authMid
 
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
+//const routes = require('./routes'); 
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -33,6 +34,8 @@ const startApolloServer = async () => {
       res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
   }
+
+  //app.use(routes); 
 
   db.once('open', () => {
     app.listen(PORT, () => {

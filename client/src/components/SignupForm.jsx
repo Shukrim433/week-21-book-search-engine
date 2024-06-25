@@ -37,9 +37,9 @@ const SignupForm = () => {
         variables: { ...userFormData }, // Spread the formState object to use its properties as variables for the mutation
       });
 
-      if (!data) { // changed from !response.ok
+      /*if (!data) { // changed from !response.ok
         throw new Error('something went wrong!');
-      }
+      }*/
 
       //const { token, user } = await response.json();
       const { token, user } = data.addUser; //** Extract token and user from the mutation response

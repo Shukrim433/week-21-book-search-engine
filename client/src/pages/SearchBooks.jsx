@@ -1,17 +1,8 @@
 import { useState, useEffect } from 'react';
-import {
-  Container,
-  Col,
-  Form,
-  Button,
-  Card,
-  Row
-} from 'react-bootstrap';
-
+import { Container, Col, Form, Button, Card, Row } from 'react-bootstrap';
 import Auth from '../utils/auth';
-import { searchGoogleBooks } from '../utils/API'; //remove this saveBookfunction use our SAVE_BOOK mutation instead
+import { searchGoogleBooks } from '../utils/API'; 
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-
 import { SAVE_BOOK } from '../utils/mutations'; // **import the SAVE_BOOK mutation
 import { useMutation } from '@apollo/client'; // **import the useMutation hook from apolloclient
 
@@ -21,12 +12,12 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const [saveBook, {loading, error}] = useMutation(SAVE_BOOK)
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
-  // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+// set up useEffect hook to save `savedBookIds` list to localStorage whenever `savedBookIds` changes**
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
@@ -66,7 +57,6 @@ const SearchBooks = () => {
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
-    // **The find method in JavaScript is used to locate a single element in an array that matches a specified condition. It returns the first element that satisfies the provided test
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
     // get token
@@ -76,17 +66,15 @@ const SearchBooks = () => {
       return false;
     }
 
-    const [saveBooky, { error }] = useMutation(SAVE_BOOK);
-
     try {
-      const { data } = await saveBooky(bookToSave)
-      //const response = await saveBook(bookToSave, token); remove this replace with line above
+      const { data } = await saveBook({
+        variables: { bookData: bookToSave}
+      })
 
-      if (!data) { // changed from response.ok
-        throw new Error('something went wrong!');
+      if (!data) {
+        throw new Error('Failed to save book!');
       }
 
-      // this adds the book that we just saved's id to local storage array of savedBookIds
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
@@ -141,12 +129,12 @@ const SearchBooks = () => {
                     <Card.Text>{book.description}</Card.Text>
                     {Auth.loggedIn() && (
                       <Button
-                        disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)} // "disabled" attribute in HTML elements, when set to true, typically prevents user interaction with that element.
+                        disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                         className='btn-block btn-info'
                         onClick={() => handleSaveBook(book.bookId)}>
-                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId) // when you click save, the text of button changes to 'this book is already saved
-                          ? 'This book has already been saved!' // .some checks if at least one element in an array satisfies a condition. returns true if any element matches the condition, otherwise false. 
-                          : 'Save this Book!'}      
+                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
+                          ? 'This book has already been saved!'
+                          : 'Save this Book!'}
                       </Button>
                     )}
                   </Card.Body>

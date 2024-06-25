@@ -19,13 +19,9 @@ const resolvers = {
 
     Mutation: {
         addUser: async (parent, { username, email, password }) => { // args =  { username, email, password }
-            try {
-                const user = await User.create({ username, email, password })
-                const token = signToken(user) // user object = jwt payload
-                return { token, user };
-            } catch {
-                console.log('error with signup')
-            }
+            const user = await User.create({ username, email, password })
+            const token = signToken(user) // user object = jwt payload
+            return { token, user };
         },
         login: async (parent, {email, password}) => {  // {email, password} = args
             const user = await User.findOne({ email })

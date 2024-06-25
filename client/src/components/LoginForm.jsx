@@ -35,9 +35,9 @@ const LoginForm = () => {
         variables: { ...userFormData },
       });
 
-      if (!data) { //changed from !response.ok
+      /*if (!data) { //changed from !response.ok
         throw new Error('something went wrong!');
-      }
+      }*/
 
       const { token, user } = data.login
       console.log(user);
@@ -48,7 +48,7 @@ const LoginForm = () => {
     }
 
     setUserFormData({
-      username: '',
+     // username: '',
       email: '',
       password: '',
     });
