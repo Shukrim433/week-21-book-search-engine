@@ -43,10 +43,9 @@ export const SAVE_BOOK = gql`
             _id
             username
             email
-            password
             bookCount
             savedBooks {
-                _id
+               bookId
                 authors
                 description
                 image
@@ -65,10 +64,9 @@ export const REMOVE_BOOK = gql`
             _id
             username
             email
-            password
             bookCount
             savedBooks {
-                _id
+               bookId
                 authors
                 description
                 image

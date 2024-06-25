@@ -40,13 +40,13 @@ const resolvers = {
 
             return { token, user }; // return the jwt and the logged in user obj to the client
         },
-        saveBook: async (parent, { book }, context) => { // book is the name of the mutation arg. passed specified in typeDefs
+        saveBook: async (parent, { bookData }, context) => { // bookData is the name of the mutation arg. passed specified in typeDefs
             // if users logged in add book to the logged in user's savedBooks array
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
                     {  $addToSet: { 
-                        savedBooks: {...book}
+                        savedBooks: bookData
                        }
                     },
                     { new: true, runValidators: true }
